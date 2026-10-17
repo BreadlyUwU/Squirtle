@@ -1,3 +1,7 @@
+// NOTE to myself: Don't even try to finish this part before finalizing SquirtleD (including every IPC calls)
+// Also maybe at some point Windwaker should go to Squirtle-Core, so Pidgey and other clients will be mainly there
+// for configuration purposes.
+// I'm really not sure doing ~20 IPC call per second for quering temperatures & adjusting fan speed is a good thing.
 #[allow(dead_code)]
 mod config;
 mod windwaker;

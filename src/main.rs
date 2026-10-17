@@ -1,6 +1,5 @@
 // mod config;
 use squirtle_d;
-use squirtle_core::SYSTEM;
 use squirtle_pidgey as pidgey;
 
 fn main() -> std::io::Result<()> {
@@ -16,7 +15,7 @@ fn main() -> std::io::Result<()> {
         println!("=======================================\n");
         unsafe { std::env::set_var("RUST_LOG", "debug"); }
     }
-    
+
     env_logger::init();
 
     let args: Vec<String> = std::env::args().collect();

@@ -1,5 +1,7 @@
-use std::io::Read;
+use std::io::{Read, Write};
+use std::net::Shutdown::Both;
 use std::os::unix::net::{UnixListener, UnixStream};
+use std::process::exit;
 
 fn read_message(stream: &mut UnixStream) -> std::io::Result<String> {
     let mut buf = String::new();
@@ -7,8 +9,8 @@ fn read_message(stream: &mut UnixStream) -> std::io::Result<String> {
     Ok(buf.trim().to_string())
 }
 
-pub fn start() -> std::io::Result<()> {
-    let listener = UnixListener::bind("/run/squirtled.sock")?;
+pub fn start(sock: &str) -> std::io::Result<()> {
+    let listener = UnixListener::bind(sock)?;
 
     for stream in listener.incoming() {
         match stream {
@@ -21,10 +23,17 @@ pub fn start() -> std::io::Result<()> {
                     }
                 };
 
-                if message == "skibidi" {
-                    log::debug!("SKIBIDI DOP DOP YES YES")
-                } else {
-                    log::debug!("Incoming UNIX connexion: {:?}", message);
+                if message == "vibecheck" {
+                    log::debug!("SKIBIDI DOP DOP YES YES");
+                    continue;
+                }
+                else if message == "stop" {
+                    log::debug!("Received a stop signal");
+                    stream.shutdown(Both).expect("Failed to stop the stream :S");
+                    std::process::exit(0);
+                }
+                else {
+                    log::warn!("Unhandled UNIX connexion: {:?}", message);
                 }
                 // thread::spawn(|| handle_client(stream));
             }
@@ -36,3 +45,4 @@ pub fn start() -> std::io::Result<()> {
     }
     Ok(())
 }
+

@@ -1,6 +1,8 @@
+// Windwaker but in fully standalone mode (not using SquirtleD, only using Squirtle-Core as backend)
+
 use std::{sync::{Arc, RwLock, atomic::{AtomicBool, Ordering}}, thread::sleep};
 use squirtle_core::thermal::ThermalSystem;
-use crate::{CONFIGURATION,  RunningMode};
+use crate::CONFIGURATION;
 
 enum TargetedCoolingMode { Active, Passive }
 enum FanSpeedInterpolation { Step, Linear }
@@ -14,14 +16,10 @@ static MUST_EXIT: AtomicBool = AtomicBool::new(false);
 static ENABLED: AtomicBool = AtomicBool::new(false);
 
 /// Start Pidgey's fan-control daemon
-pub fn start(mode: RunningMode, arc: Arc<RwLock<ThermalSystem>>) {
+pub fn start(arc: Arc<RwLock<ThermalSystem>>) {
     let system = arc.clone();
-    log::info!("Starting Pidgey{}.",
-        match &mode {
-            RunningMode::Real => "",
-            RunningMode::Simulation => "\x1b[1m in simulation mode\x1b[0m"
-        });
-    
+    log::info!("Starting Pidgey");
+
     // Let's fucking gooooo
     let orchestrator = std::thread::spawn(move || {
         log::info!("Let's a go!");
@@ -34,12 +32,11 @@ pub fn start(mode: RunningMode, arc: Arc<RwLock<ThermalSystem>>) {
         log::debug!("previous_platform_profile set to {}", &previous_platform_profile);
 
         let platform_profile_restoration_needed: bool = if let Some(config_profile) = &CONFIGURATION.platform_profile {
-            if &previous_platform_profile != config_profile
-            && matches!(mode, RunningMode::Real) {
+            if &previous_platform_profile != config_profile {
                 system.write().unwrap().set_platform_profile("alienware-wmi", config_profile.to_owned());
                 log::info!("Platform Profile set to {}, previous state ({}) will be restored when exiting", &config_profile, &previous_platform_profile);
                 true
-            } 
+            }
             else { false }
         } else { false };
 
@@ -73,7 +70,7 @@ pub fn start(mode: RunningMode, arc: Arc<RwLock<ThermalSystem>>) {
             });
 
             std::thread::spawn(move || {
-                fan_daemon(fan_system, mode, fan_mode)
+                fan_daemon(fan_system, fan_mode)
             }).join().expect("The fan controller thread just crashed :c");
 
             log::info!("Fan controller thread gracefully exited");
@@ -101,7 +98,6 @@ pub fn start(mode: RunningMode, arc: Arc<RwLock<ThermalSystem>>) {
 }
 
 fn fan_daemon(system: Arc<RwLock<ThermalSystem>>,
-              running_mode: RunningMode, 
               fan_interpolation_mode: FanSpeedInterpolation) {
     log::info!("Fan Daemon started.");
 

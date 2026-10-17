@@ -44,13 +44,13 @@ fn not_implemented() { eprintln!("Not implemented yet sowwyyyyy.") }
 
 fn version() {
     println!("🐢 Squirtle Project 💦
+SquirtleCtl: Version {}
 Squirtle-Core: Version {}
 SquirtleD: Version {}
-SquirtleCtl: Version {}
 Pidgey: Version {}",
+String::from(env!("CARGO_PKG_VERSION")),
     squirtle_core::version(),
     squirtle_d::version(),
-    String::from(env!("CARGO_PKG_VERSION")),
     pidgey::version()
     );
 }

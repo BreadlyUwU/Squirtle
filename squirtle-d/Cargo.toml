@@ -2,6 +2,7 @@
 name = "squirtle-d"
 description = "Squirtle Daemon"
 version = "0.0.1"
+license-file = "../license.txt"
 edition = "2024"
 
 [dependencies]

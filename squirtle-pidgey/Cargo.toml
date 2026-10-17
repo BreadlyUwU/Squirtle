@@ -2,7 +2,7 @@
 name = "squirtle-pidgey"
 description = "Fan control daemon"
 version = "0.0.1"
-license = "AGPL-3.0-only"
+license-file = "../license.txt"
 edition = "2024"
 
 [dependencies]

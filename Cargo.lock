@@ -322,7 +322,7 @@ dependencies = [
 
 [[package]]
 name = "squirtle-core"
-version = "0.0.1-evildead"
+version = "0.0.1-dont-touch-its-dirty"
 dependencies = [
  "env_logger",
  "log",

@@ -1,8 +1,8 @@
 [package]
 name = "squirtle-core"
 description = "Squirtle's backend"
-version = "0.0.1-evildead"
-license = "AGPL-3.0-only"
+version = "0.0.1-dont-touch-its-dirty"
+license-file = "../license.txt"
 edition = "2024"
 
 [dependencies]

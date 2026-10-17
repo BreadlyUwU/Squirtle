@@ -1,18 +1,82 @@
-interval: 1
-hysteresis: 5
-platform_profile:
-  provider: alienware-wmi
-  profile: balanced
+# Determine the interval between each temperatures pooling (does not affect the fan-adjustement refresh rate) (values: 1-255 (in sec)).
+# (Please note that the temperatures aren't pooled from the alienware-wmi, but from dell-smm's hwmon interface)
+temp_check_interval: 1
 
+# Can also be set on each temperature targets individually (values: 0-255).
+# If fan_update_interval is 0 or unset, this parametter will only have effect for the first thermal target (for each fan(s)).
+# Don't hesitate to be generous with the hyteresis, especially for the step 1.
+global_hysteresis: 5
+
+# (Optional) Determine the interval between every adjustement of fan speed into any intermediate value (values : 0-255 (in sec)).
+# If commented or set to 0: will disable the linear interpolation when calculating the fan speed, their update 
+# interval and speed will then strictly depend on the temp. check interval, the thermal target steps and the hysteresis.
+#fan_update_interval: 1
+
+# (Optional) Set it to "custom" instead of "balanced" to ask Alienware-WMI to make more room for your own settings.
+# Notes: - Pidgey will work perfectly fine with any other platform-profile than "custom" (except "performance").
+#        - Your laptop's firmware will still have the last word about when and why it is needed to start the active cooling.
+#        - Please do not forcefully disable the BIOS fan control (Pidgey will likely dont work at all if you do this).
+platform_profile: "custom"
+
+# You can set one or more temperature sources. Use the `sensors` command in your Linux terminal to see which ones
+# should fit for you.
+# If more than one selected, they will all be monitored by Pidgey and the highest temp. reported will prevail.
+# (Put only the interface's name before the "-" character. E.g.: `pch_cometlake-virtual-0` will be `pch_cometlake`)
+temperature_sources:
+  dell_smm:
+    - temp1_input
+    - temp2_input
+
+# Set the HWMON interface's name where Pidgey will have to search for actionnable fans.
+cooling_device: "alienware_wmi"
+
+# If the temperatures fall bellow the first temp (including hysteresis), Pidgey will automatically target the passive cooling mode
+# and restart the active one only once the first temperature target has been reached again.
+# Note: - Following your selected platform_profile (notably with "quiet" and "cool") and your settings, there's a chance
+#         your laptop's fans will continue to spin even after Pidgey goes "passive".
+#       - The fan speed is "speed", by percentage. Pidgey will "accept" values above 100 but, for security, will downgrade the values to max 100 afterward.
+#       - Every laptop will behave differently. For instance my G3 3500's fans will starts only at "speed: 17".
+#         You'll have to find yourself the good minimum value for your device. 
+#       - Avoid setting the first speed at your laptop's strict minimum value (e.g.: set it to approx. 5-10 units above the minimum).
 thermal_targets:
   - temp: 60
-    boost: 40
+    speed: 40
     hysteresis: 10
   - temp: 65
-    boost: 55
+    speed: 55
   - temp: 70
-    boost: 70
+    speed: 70
   - temp: 75
-    boost: 85
+    speed: 85
   - temp: 80
-    boost: 100
+    speed: 100
+
+# You can also write thermal targets for EACH fans.
+# The identifier behind the list of targets must be either a string (wrapped inside "quotes") corresponding to the fan's label,
+# or a number starting from 1. 
+# E.g.: On most laptops, `1` will be the left fan (CPU Fan) and `2` the right fan (GPU Fan).
+#thermal_targets:
+#  - "CPU Fan":
+#    - temp: 60
+#      speed: 40
+#      hysteresis: 10
+#    - temp: 65
+#      speed: 55
+#    - temp: 70
+#      speed: 70
+#    - temp: 75
+#      speed: 85
+#    - temp: 80
+#      speed: 100
+#  - 2:
+#    - temp: 65
+#      speed: 40
+#      hysteresis: 15
+#    - temp: 70
+#      speed: 55
+#    - temp: 75
+#      speed: 70
+#    - temp: 80
+#      speed: 85
+#    - temp: 85
+#      speed: 100

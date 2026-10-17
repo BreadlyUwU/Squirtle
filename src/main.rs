@@ -1,6 +1,6 @@
 // mod config;
 use squirtle_d;
-use squirtle_pidgey as pidgey;
+use squirtle_pidgey;
 
 fn main() -> std::io::Result<()> {
     if std::env::consts::OS != "linux" {
@@ -22,19 +22,60 @@ fn main() -> std::io::Result<()> {
     match args.len() {
         2 => {
             match args[1].as_str() {
-                "--start"          => squirtle_d::start(),
                 "-v" | "--version" => version(),
                 _ => help(),
             }
         },
+        3 => {
+            match args[1].as_str() {
+                "daemon" => {
+                    match args[2].as_str() {
+                        "start" => squirtle_d::start(),
+                        _ => help(),
+                    }
+                },
+                "fan-control" => {
+                    match args[2].as_str() {
+                        "start" => squirtle_pidgey::init(squirtle_pidgey::RunningMode::Client),
+                        _ => help()
+                    }
+                }
+                _ => help()
+            }
+        }
+        4 => {
+            match args[1].as_str() {
+                "fan-control" => {
+                    match args[2].as_str() {
+                        "start" => {
+                            match args[3].as_str() {
+                                "--standalone" => squirtle_pidgey::init(squirtle_pidgey::RunningMode::Standalone),
+                                _ => help()
+                            }
+                        },
+                        _ => help()
+                    }
+                }
+                _ => help()
+            }
+        }
         _ => help()
     } Ok(())
 }
 
 fn help() {
-    println!("SquirtleCtl:
-    <--start> : Start SquirtleD
-    <-v|--version> : Show version"
+    println!(
+"SquirtleCtl available commands:
+daemon
+  start            : Start SquirtleD
+  stop             : Stop SquirtleD
+
+fan-control
+  start [OPTS]     : Start Pidgey
+    (--standalone) : Start Pidgey without using SquirtleD
+                     (only recommended if you're not using any other client)
+
+-v --version       : Show version"
     );
 }
 
@@ -47,9 +88,8 @@ SquirtleCtl: Version {}
 Squirtle-Core: Version {}
 SquirtleD: Version {}
 Pidgey: Version {}",
-String::from(env!("CARGO_PKG_VERSION")),
+    String::from(env!("CARGO_PKG_VERSION")),
     squirtle_core::version(),
     squirtle_d::version(),
-    pidgey::version()
-    );
+    squirtle_pidgey::version());
 }

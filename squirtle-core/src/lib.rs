@@ -1,11 +1,11 @@
 use std::sync::{LazyLock, Arc, RwLock};
 
+// mod cpu; // Not yet useful + Too old scrappy code
+// mod gpu; // Not yet useful + Too old scrappy code
+// mod lspci; // Dependency of cpu & gpu modules, so not usefull either
+// mod msr; // Does not even exists what the hell are you doing here
 pub mod thermal; // Thermal management backend
 pub mod sysfs;
-mod cpu;
-mod lspci;
-// pub mod gpu; // Not yet useful + Too old scrappy code
-// mod msr; // Not even exists
 
 /// SYSTEM is the heart of squirtle-core. Once called, every components has to be initialized first.
 /// - `init_cpuinfo()` method enable the CPU subsystem and store the current CPU informations (and will not do much else for now)
@@ -24,22 +24,26 @@ pub static SYSTEM: LazyLock<Arc<RwLock<GlobalSystem>>> = LazyLock::new(|| Arc::n
 /// 
 /// This is to avoid loading a ton of informations in the same time if they're not immediately needed.
 /// 
-/// - [`init_cpuinfo()`] To enable Squirtle's CPU subsystem
+/// - [`init_cpuinfo()`] To enable Squirtle's CPU subsystem (Completely deactivated until it can be useful)
 /// - [`init_thermal()`] To enable Squirtle's thermal subsystem
 pub struct GlobalSystem {
-    pub cpu: Option<crate::cpu::CPUInfo>,
+    // pub cpu: Option<crate::cpu::CPUInfo>,
     // pub gpu: Option<sniffa::gpu::GPUInfo>,
     pub thermal: Option<Arc<RwLock<thermal::ThermalSystem>>>,
 } impl GlobalSystem {
     pub fn new() -> Self { 
         Self {
-            cpu: None,
+            // cpu: None,
             // gpu: None,
             thermal: None,
         } 
     }
-    /// Return a CPUInfo struct full of little informations about the current CPU
-    pub fn init_cpuinfo(&mut self) { self.cpu = Some(crate::cpu::CPUInfo::get()) }
+
+    // Return a CPUInfo struct full of little informations about the current CPU
+    // pub fn init_cpuinfo(&mut self) { self.cpu = Some(crate::cpu::CPUInfo::get()) }
+
     /// Return a new Arc<RwLock<ThermalSystem>>>, from which you'll be able to start some operations on, e.g., the computer's fans.
     pub fn init_thermalsystem(&mut self) { self.thermal = Some(Arc::new(RwLock::new(thermal::ThermalSystem::new()))) }
 }
+
+pub fn version() -> String { String::from(env!("CARGO_PKG_VERSION")) }

@@ -33,35 +33,8 @@ fn main() -> std::io::Result<()> {
                 _ => help(),
             }
         },
-        3 => {
-            match args[1].as_str() {
-                "--demo" => match args[2].as_str() {
-                    "-c" | "--cpu"     => cpu_demo(),
-                    "-g" | "--gpu"     => not_implemented(),
-                    _ => help(),
-                }
-                "-m-" | "--msr" => match args[2] {
-                    _ => not_implemented(),
-                }
-                "-f" | "--fan-control" => match args[2].as_str() {
-                    "-d" | "--daemon"     => pidgey::start(pidgey::RunningMode::Real),
-                    "-s" | "--simulation" => pidgey::start(pidgey::RunningMode::Simulation),
-                    "-t" | "--test"       => pidgey::test(),
-                    _            => help(),
-                }
-                _ => help(),
-            };
-        }
         _ => help()
     } Ok(())
-}
-
-fn cpu_demo() {
-    let current_system = SYSTEM.clone();
-    current_system.write().unwrap().init_cpuinfo();
-    
-    let guard = current_system.read().unwrap();
-    guard.cpu.as_ref().unwrap().show();
 }
 
 fn help() {

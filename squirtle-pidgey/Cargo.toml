@@ -1,0 +1,13 @@
+[package]
+name = "squirtle-pidgey"
+description = "Fan control daemon"
+version = "0.0.1"
+license = "AGPL-3.0-only"
+edition = "2024"
+
+[dependencies]
+squirtle-core.workspace = true
+log.workspace = true
+env_logger.workspace = true
+serde = { version = "1.0.229", features = ["derive"] }
+yaml_serde = "0.10.7"

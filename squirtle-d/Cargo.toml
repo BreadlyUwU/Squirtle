@@ -1,0 +1,8 @@
+[package]
+name = "squirtle-d"
+version = "0.0.1"
+edition = "2024"
+
+[dependencies]
+squirtle-core.workspace = true
+log.workspace = true

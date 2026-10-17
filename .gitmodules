@@ -1,0 +1,9 @@
+[submodule "pidgey"]
+	path = pidgey
+	url = git@github.com:Squirtle-Project/pidgey.git
+[submodule "squirtle-core"]
+	path = squirtle-core
+	url = git@github.com:Squirtle-Project/squirtle-core.git
+[submodule "squirtled"]
+	path = squirtled
+	url = git@github.com:Squirtle-Project/squirtled.git

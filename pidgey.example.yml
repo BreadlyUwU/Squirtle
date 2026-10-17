@@ -1,0 +1,18 @@
+interval: 1
+hysteresis: 5
+platform_profile:
+  provider: alienware-wmi
+  profile: balanced
+
+thermal_targets:
+  - temp: 60
+    boost: 40
+    hysteresis: 10
+  - temp: 65
+    boost: 55
+  - temp: 70
+    boost: 70
+  - temp: 75
+    boost: 85
+  - temp: 80
+    boost: 100

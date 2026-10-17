@@ -1,0 +1,28 @@
+[package]
+name = "squirtlectl"
+description = "Breadcat's thermal/performance control center"
+version = "0.0.1"
+license-file = "./LICENSE.txt"
+edition = "2024"
+
+[workspace]
+resolve = 2
+name = "squirtle"
+members = [
+    "squirtle-core", "squirtle-d",
+    "squirtle-pidgey"
+]
+
+[workspace.dependencies]
+squirtle-core = { path = "squirtle-core" }
+squirtle-d = { path = "squirtle-d" }
+squirtle-pidgey = { path = "squirtle-pidgey" }
+log = "0.4.34"
+env_logger = "0.11.11"
+
+[dependencies]
+squirtle-core.workspace = true
+squirtle-d.workspace = true
+squirtle-pidgey.workspace = true
+log.workspace = true
+env_logger.workspace = true

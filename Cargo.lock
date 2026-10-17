@@ -199,6 +199,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "libc"
+version = "0.2.191"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "65cd87c9a6d60536580b316ad985726104730a5151c99845f2490428ef91240a"
+
+[[package]]
 name = "libyaml-rs"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -341,6 +347,7 @@ name = "squirtle-pidgey"
 version = "0.0.1"
 dependencies = [
  "env_logger",
+ "libc",
  "log",
  "serde",
  "squirtle-core",

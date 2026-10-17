@@ -9,5 +9,6 @@ edition = "2024"
 squirtle-core.workspace = true
 log.workspace = true
 env_logger.workspace = true
+libc.workspace = true
 serde = { version = "1.0.229", features = ["derive"] }
 yaml_serde = "0.10.7"

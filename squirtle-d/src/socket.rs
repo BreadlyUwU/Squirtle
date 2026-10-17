@@ -1,7 +1,6 @@
 use std::io::{Read, Write};
 use std::net::Shutdown::Both;
 use std::os::unix::net::{UnixListener, UnixStream};
-use std::process::exit;
 
 fn read_message(stream: &mut UnixStream) -> std::io::Result<String> {
     let mut buf = String::new();
@@ -25,7 +24,8 @@ pub fn start(sock: &str) -> std::io::Result<()> {
 
                 if message == "vibecheck" {
                     log::debug!("SKIBIDI DOP DOP YES YES");
-                    continue;
+                    stream.write(b"Ok")?;
+                    stream.shutdown(std::net::Shutdown::Write)?;
                 }
                 else if message == "stop" {
                     log::debug!("Received a stop signal");

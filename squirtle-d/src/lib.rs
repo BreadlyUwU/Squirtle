@@ -1,4 +1,4 @@
-use std::{io::{ErrorKind, Read, Write}, os::unix::net::UnixStream, process::exit};
+use std::{io::{ErrorKind, Read, Write}, os::unix::net::UnixStream, process::exit, time::Duration};
 
 mod socket;
 const SOCKET_PATH: &str = "/run/squirtle.sock";
@@ -11,11 +11,17 @@ pub fn start() {
             match UnixStream::connect(SOCKET_PATH) {
                 Ok(mut sock) => {
                     let mut response = String::new();
+                    sock.set_write_timeout(Some(Duration::from_secs(2))).expect("Cannot set write timeout");
                     sock.write_all(b"vibecheck").unwrap();
+                    sock.shutdown(std::net::Shutdown::Write).expect("Cannot shutdown the write stream");
+                    sock.set_read_timeout(Some(Duration::from_secs(2))).expect("Cannot set read timeout");
                     sock.read_to_string(&mut response).unwrap();
                     if response == "Ok" {
-                        eprintln!("SquirtleD is already launched O_O");
+                        eprintln!("SquirtleD is already running!");
                         std::process::exit(1);
+                    } else {
+                        eprintln!("SquirtleD answered to the vibe-check but with an unexpected response: {}", response);
+                        std::process::exit(2);
                     }
                 },
                 Err(e) => {

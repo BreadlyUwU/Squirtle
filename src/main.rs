@@ -1,4 +1,4 @@
-mod config;
+// mod config;
 use squirtle_d;
 use squirtle_core::SYSTEM;
 use squirtle_pidgey as pidgey;
@@ -23,13 +23,8 @@ fn main() -> std::io::Result<()> {
     match args.len() {
         2 => {
             match args[1].as_str() {
-                "--start" => squirtle_d::start(), 
-                "--demo" => {
-                    cpu_demo();
-                    // sniffa::gpu::demo();
-                },
-                "-m" | "--msr" => println!("Not implemented sowwyyyyy."),
-                "-f" | "--fan-control" => help(),
+                "--start"          => squirtle_d::start(),
+                "-v" | "--version" => version(),
                 _ => help(),
             }
         },
@@ -38,11 +33,24 @@ fn main() -> std::io::Result<()> {
 }
 
 fn help() {
-    println!("Squirtle
-    <--start>\n\t\t- Start SquirtleD
-    <-f|--fan-control> (-<d/s/t>|--<daemon|simulation|test>)\n\t\t- Start the built-in fan-control daemon in autonomous mode (require root permissions, unless in simulation mode)
-    <-m|--msr> (--read-raw <addr>)\n\t\t- Raw-read a specific MSR address (for testing purposes)
-    <--demo> (-<c|g|t>|--<cpu|gpu>)\n\t\t- Run a sniffa CLI demo for debug purposes (without arguments, Squirtle will run all demos)");
+    println!("SquirtleCtl:
+    <--start> : Start SquirtleD
+    <-v|--version> : Show version"
+    );
 }
 
+#[allow(unused)]
 fn not_implemented() { eprintln!("Not implemented yet sowwyyyyy.") }
+
+fn version() {
+    println!("🐢 Squirtle Project 💦
+Squirtle-Core: Version {}
+SquirtleD: Version {}
+SquirtleCtl: Version {}
+Pidgey: Version {}",
+    squirtle_core::version(),
+    squirtle_d::version(),
+    String::from(env!("CARGO_PKG_VERSION")),
+    pidgey::version()
+    );
+}

@@ -57,3 +57,5 @@ pub fn test() {
         },
     }
 }
+
+pub fn version() -> String { String::from(env!("CARGO_PKG_VERSION")) }

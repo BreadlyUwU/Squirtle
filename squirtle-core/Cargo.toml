@@ -8,4 +8,5 @@ edition = "2024"
 [dependencies]
 log.workspace = true
 env_logger.workspace = true
+libc.workspace = true
 # msru = "0.2.0"

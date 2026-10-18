@@ -1,10 +1,12 @@
-use std::{io::{ErrorKind, Read, Write}, os::unix::net::UnixStream, process::exit, time::Duration};
-
 mod socket;
+use std::{io::{ErrorKind, Read, Write}, os::unix::net::UnixStream, time::Duration};
+
 const SOCKET_PATH: &str = "/run/squirtle.sock";
 
 pub fn start() {
-    // Before anything we must know of a socket has already been created.
+    // Program will close early if not executed with root permissions
+    squirtle_core::utils::rootcheck();
+    // Now, we must know if a socket has already been created.
     // Because if yes, it can be either a socket from a previous session, or a currently used one.
     match std::fs::exists(SOCKET_PATH) {
         Ok(true) => {
@@ -29,12 +31,10 @@ pub fn start() {
                         ErrorKind::ConnectionRefused => {
                             log::info!("Socket found, but couldn't connect to it {}: {}", SOCKET_PATH, e);
                             let _ = match std::fs::remove_file(SOCKET_PATH) {
-                                // Old socket cleared, can now start for good
                                 Ok(_) => {
                                     log::info!("Old socket cleared, can now start");
                                     socket::start(SOCKET_PATH) 
                                 },
-                                // Shouldn't happen unless I check for root permission earlier
                                 Err(e) => {
                                     log::error!("Couldn't delete the old socket file {}: {}", SOCKET_PATH, e);
                                     std::process::exit(1)

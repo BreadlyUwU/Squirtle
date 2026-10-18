@@ -14,11 +14,8 @@ fn prepare_and_start_clientmode() { todo!() }
 
 /// Start Pidgey by initializing Squirtle's thermal subsystem, if it hasn't already been
 fn prepare_and_start_standalone() {
-    let current_uid = unsafe { libc::getuid() };
-    if current_uid != 0 {
-        eprintln!("Error: Pidgey in standalone mode must be launched with ROOT permissions.");
-        std::process::exit(1);
-    }
+    // Program will close early if not executed with root permissions
+    squirtle_core::utils::rootcheck();
     let current_system = SYSTEM.clone();
     let current_thermal_system = current_system.read().unwrap().thermal.clone();
     match current_thermal_system {

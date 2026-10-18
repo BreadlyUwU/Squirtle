@@ -331,6 +331,7 @@ name = "squirtle-core"
 version = "0.0.1-dont-touch-its-dirty"
 dependencies = [
  "env_logger",
+ "libc",
  "log",
 ]
 
@@ -347,7 +348,6 @@ name = "squirtle-pidgey"
 version = "0.0.1"
 dependencies = [
  "env_logger",
- "libc",
  "log",
  "serde",
  "squirtle-core",

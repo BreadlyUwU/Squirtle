@@ -6,6 +6,7 @@ use std::sync::{LazyLock, Arc, RwLock};
 // mod msr; // Does not even exists what the hell are you doing here
 pub mod thermal; // Thermal management backend
 pub mod sysfs;
+pub mod utils;
 
 /// SYSTEM is the heart of squirtle-core. Once called, every components has to be initialized first.
 /// - `init_cpuinfo()` method enable the CPU subsystem and store the current CPU informations (and will not do much else for now)

@@ -12,19 +12,19 @@ pub mod utils;
 /// - `init_cpuinfo()` method enable the CPU subsystem and store the current CPU informations (and will not do much else for now)
 /// - `init_thermalsystem()` method enable Squirtle's thermal management system (the main protagonist of this library).
 /// - *(More will "eventually" follow over time, once the most important parts are stabilized)*
-/// 
+///
 /// init_thermalsystem() will create a new Arc & RwLock. You'll be able to store a SYSTEM-independant reference to it
 /// so you can perform every operations you want in a thread-safe way, without locking the other subsystems.
-/// 
+///
 /// The point of it is being accessible during Squirtle's daemon life-time and be interracted with via IPC by other
 /// softwares (potentially by multiples ones and at the same time), starting with `pidgey` (Squirtle's fan-control daemon).
-pub static SYSTEM: LazyLock<Arc<RwLock<GlobalSystem>>> = LazyLock::new(|| Arc::new(RwLock::new(GlobalSystem::new())) ); 
+pub static SYSTEM: LazyLock<Arc<RwLock<GlobalSystem>>> = LazyLock::new(|| Arc::new(RwLock::new(GlobalSystem::new())) );
 
 /// **GlobalSystem is the entry point of every Squirtle's subsystems. Once called first via `new()` method, you'll be able
 /// to activate manually the components you need.**
-/// 
+///
 /// This is to avoid loading a ton of informations in the same time if they're not immediately needed.
-/// 
+///
 /// - [`init_cpuinfo()`] To enable Squirtle's CPU subsystem (Completely deactivated until it can be useful)
 /// - [`init_thermal()`] To enable Squirtle's thermal subsystem
 pub struct GlobalSystem {
@@ -32,12 +32,12 @@ pub struct GlobalSystem {
     // pub gpu: Option<sniffa::gpu::GPUInfo>,
     pub thermal: Option<Arc<RwLock<thermal::ThermalSystem>>>,
 } impl GlobalSystem {
-    pub fn new() -> Self { 
+    pub fn new() -> Self {
         Self {
             // cpu: None,
             // gpu: None,
             thermal: None,
-        } 
+        }
     }
 
     // Return a CPUInfo struct full of little informations about the current CPU

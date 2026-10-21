@@ -5,12 +5,13 @@ const SOCKET_PATH: &str = "/run/squirtle.sock";
 
 pub fn start() {
     // Program will close early if not executed with root permissions
-    squirtle_core::utils::rootcheck();
+    squirtle_core::utils::root_check();
     // Now, we must know if a socket has already been created.
     // Because if yes, it can be either a socket from a previous session, or a currently used one.
     old_sock_checker();
 }
 
+/// Sniffa the sock & throw it to the trash bin if it stinks
 fn old_sock_checker() {
     match std::fs::exists(SOCKET_PATH) {
         Ok(true) => {
@@ -46,7 +47,7 @@ fn old_sock_checker() {
         },
         Ok(false) => socket::start(SOCKET_PATH).unwrap(),
         Err(e) => {
-            eprintln!("Cannot check the presence of a currently used or abandonned socket at the expected path: {}", e);
+            eprintln!("Cannot check the presence of a currently used or abandoned socket at the expected path: {}", e);
             std::process::exit(1)
         },
     }

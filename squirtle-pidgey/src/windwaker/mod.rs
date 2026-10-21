@@ -15,7 +15,7 @@ fn prepare_and_start_clientmode() { todo!() }
 /// Start Pidgey by initializing Squirtle's thermal subsystem, if it hasn't already been
 fn prepare_and_start_standalone() {
     // Program will close early if not executed with root permissions
-    squirtle_core::utils::rootcheck();
+    squirtle_core::utils::root_check();
     let current_system = SYSTEM.clone();
     let current_thermal_system = current_system.read().unwrap().thermal.clone();
     match current_thermal_system {

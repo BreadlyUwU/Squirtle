@@ -359,7 +359,6 @@ name = "squirtlectl"
 version = "0.0.1"
 dependencies = [
  "env_logger",
- "log",
  "squirtle-core",
  "squirtle-d",
  "squirtle-pidgey",

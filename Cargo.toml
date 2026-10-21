@@ -6,11 +6,8 @@ license-file = "./LICENSE.txt"
 edition = "2024"
 
 [workspace]
-resolve = 2
-name = "squirtle"
 members = [
-    "squirtle-core", "squirtle-d",
-    "squirtle-pidgey"
+    "squirtle-core", "squirtle-d", "squirtle-pidgey"
 ]
 
 [workspace.dependencies]

@@ -4,7 +4,7 @@ use squirtle_pidgey;
 
 fn main() -> std::io::Result<()> {
     if std::env::consts::OS != "linux" {
-        eprintln!("This program is designed to be run on Linux.\nOther UNIX-based OS aren't guaranted to be supported in the future.\nSorry for that.\n");
+        eprintln!("This program is designed to be run on Linux.\nOther UNIX-based OS aren't guaranteed to be supported in the future.\nSorry for that.\n");
         std::process::exit(1)
     }
 

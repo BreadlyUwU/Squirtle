@@ -79,9 +79,6 @@ fan-control
     );
 }
 
-#[allow(unused)]
-fn not_implemented() { eprintln!("Not implemented yet sowwyyyyy.") }
-
 fn version() {
     println!("🐢 Squirtle Project 💦
 Squirtle-Core: Version {}

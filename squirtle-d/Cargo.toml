@@ -5,6 +5,10 @@ version = "0.0.1"
 license-file = "../license.txt"
 edition = "2024"
 
+[[bin]]
+name = "squirtled"
+path = "src/main.rs"
+
 [dependencies]
 squirtle-core.workspace = true
 log.workspace = true

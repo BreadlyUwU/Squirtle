@@ -1,4 +1,5 @@
 **/.directory
+**/Cargo.lock
 /target
 pidgey.yml
 

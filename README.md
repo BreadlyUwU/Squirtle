@@ -5,11 +5,13 @@
 > [!WARNING]
 > Squirtle is not yet in a working state, do not try to use it for yourself.
 
-It's a little-too-big-for-the-beginner-I-am project I started because there's literally **0** fan-control software on Linux that work with my laptop (because apparently nobody figured out how to correctly tame the Dell G-Series devices), and I wanted to have something cool that'll do the job for me but also for anyone else.
+It's a little-too-big-for-the-beginner-I-am project I started because there's literally **0** fan-control software on Linux that work with my laptop (because apparently nobody figured out how to correctly tame the Dell G-Series devices).
+
+I want to have something cool that'll do the job for me but also for anyone else.
 
 ### squirtlectl
 
-It's the whole program you end up with when compiling this project.
+The CLI tool that let you control both Squirtle's main daemon (SquirtleD) and the fan-control daemon (Pidgey).
 
 | Command Argument(s) | Description |
 |---------------------|:-----------:|
@@ -36,7 +38,7 @@ It is here so we can have both Pidgey (or any other thermal-control software bas
 
 ### squirtle-pidgey
 
-A Squirtle-based multithreaded fan-control daemon.
+Squirtle's multithreaded fan-control daemon.
 
 Its goal is being able to asynchronously keep an eye to the relevant sensors and adjusting the fan speed (as a whole package, or adjusting each fans individually according to user-settings).
 

@@ -1,4 +1,4 @@
-// mod config;
+use squirtle_core;
 use squirtle_d;
 use squirtle_pidgey;
 
@@ -65,7 +65,7 @@ fn main() -> std::io::Result<()> {
 
 fn help() {
     println!(
-"SquirtleCtl available commands:
+        "SquirtleCtl available commands:
 daemon
   start            : Start SquirtleD
   stop             : Stop SquirtleD
@@ -85,8 +85,8 @@ Squirtle-Core: Version {}
 SquirtleD: Version {}
 SquirtleCtl: Version {}
 Pidgey: Version {}",
-    squirtle_core::version(),
-    squirtle_d::version(),
-    String::from(env!("CARGO_PKG_VERSION")),
-    squirtle_pidgey::version());
+             squirtle_core::version(),
+             squirtle_d::version(),
+             String::from(env!("CARGO_PKG_VERSION")),
+             squirtle_pidgey::version());
 }

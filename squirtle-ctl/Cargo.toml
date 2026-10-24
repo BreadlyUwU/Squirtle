@@ -1,0 +1,16 @@
+[package]
+name = "squirtle-ctl"
+description = "Squirtle Control"
+version = "0.0.1"
+license-file = "../license.txt"
+edition = "2024"
+
+[[bin]]
+name = "squirtlectl"
+path = "src/main.rs"
+
+[dependencies]
+squirtle-core.workspace = true
+squirtle-d.workspace = true
+squirtle-pidgey.workspace = true
+env_logger.workspace = true

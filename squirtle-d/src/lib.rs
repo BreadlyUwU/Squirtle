@@ -16,7 +16,7 @@ fn old_sock_checker() {
     match std::fs::exists(SOCKET_PATH) {
         Ok(true) => {
             match UnixStream::connect(SOCKET_PATH) {
-                Ok(mut sock) => vibecheck(&mut sock),
+                Ok(mut sock) => vibe_check(&mut sock),
                 Err(e) => {
                     match e.kind() {
                         ErrorKind::ConnectionRefused => {
@@ -53,19 +53,23 @@ fn old_sock_checker() {
     }
 }
 
-fn vibecheck(socket: &mut UnixStream) {
+fn vibe_check(socket: &mut UnixStream) {
     let mut response = String::new();
+
     socket.set_write_timeout(Some(Duration::from_secs(2))).expect("Cannot set write timeout");
-    socket.write_all(b"vibecheck").unwrap();
+    socket.write_all(b"check").unwrap();
     socket.shutdown(std::net::Shutdown::Write).expect("Cannot shutdown the write stream");
+
     socket.set_read_timeout(Some(Duration::from_secs(2))).expect("Cannot set read timeout");
     socket.read_to_string(&mut response).unwrap();
+    socket.shutdown(std::net::Shutdown::Read).expect("Cannot shutdown the read stream");
+
     if response == "Ok" {
-	eprintln!("SquirtleD is already running!");
-	std::process::exit(1);
+        eprintln!("SquirtleD is already running!");
+        std::process::exit(1);
     } else {
-	eprintln!("SquirtleD answered to the vibe-check but with an unexpected response: {}", response);
-	std::process::exit(2);
+        eprintln!("SquirtleD answered to the vibe-check but with an unexpected response: {}", response);
+        std::process::exit(2);
     }
 }
 

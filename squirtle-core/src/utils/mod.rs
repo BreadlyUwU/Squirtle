@@ -9,13 +9,8 @@ pub fn root_check() {
 }
 
 pub fn enable_debug_logging_if_needed() {
-    if cfg!(debug_assertions) {
-        println!("\n=======================================");
-        println!("=              Hello,,,               =");
-        println!("= I-I'm s,,, stu,,, stupiiiiid~! >~<  =");
-        println!("=======================================\n");
+    if cfg!(debug_assertions) && std::env::var_os("SQUIRTLE_IS_CHILD").is_none() {
         unsafe { std::env::set_var("RUST_LOG", "debug"); }
+        env_logger::init();
     }
-
-    env_logger::init();
 }

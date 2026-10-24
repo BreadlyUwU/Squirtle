@@ -7,16 +7,7 @@ fn main() -> std::io::Result<()> {
         eprintln!("This program is designed to be run on Linux.\nOther UNIX-based OS aren't guaranteed to be supported in the future.\nSorry for that.\n");
         std::process::exit(1)
     }
-
-    if cfg!(debug_assertions) {
-        println!("\n=======================================");
-        println!("=              Hello,,,               =");
-        println!("= I-I'm s,,, stu,,, stupiiiiid~! >~<  =");
-        println!("=======================================\n");
-        unsafe { std::env::set_var("RUST_LOG", "debug"); }
-    }
-
-    env_logger::init();
+    squirtle_core::utils::enable_debug_logging_if_needed();
 
     let args: Vec<String> = std::env::args().collect();
     match args.len() {

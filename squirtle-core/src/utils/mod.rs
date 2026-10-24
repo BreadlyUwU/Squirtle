@@ -7,3 +7,15 @@ pub fn root_check() {
         std::process::exit(1);
     }
 }
+
+pub fn enable_debug_logging_if_needed() {
+    if cfg!(debug_assertions) {
+        println!("\n=======================================");
+        println!("=              Hello,,,               =");
+        println!("= I-I'm s,,, stu,,, stupiiiiid~! >~<  =");
+        println!("=======================================\n");
+        unsafe { std::env::set_var("RUST_LOG", "debug"); }
+    }
+
+    env_logger::init();
+}

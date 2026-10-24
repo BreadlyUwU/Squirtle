@@ -22,20 +22,20 @@ pub fn start(sock: &str) -> std::io::Result<()> {
                     }
                 };
 
-                if message == "vibecheck" {
-                    log::debug!("SKIBIDI DOP DOP YES YES");
-                    stream.write(b"Ok")?;
-                    stream.shutdown(std::net::Shutdown::Write)?;
+                match message.as_str() {
+                    // What the heck is going on
+                    "check" => {
+                        log::debug!("SKIBIDI DOP DOP YES YES");
+                        stream.write_all(b"Ok")?;
+                        stream.shutdown(std::net::Shutdown::Write)?;
+                    },
+                    "stop" => {
+                        log::debug!("Received a stop signal");
+                        stream.shutdown(Both).expect("Failed to stop the stream :S");
+                        std::process::exit(0);
+                    },
+                    _ => log::warn!("Unhandled UNIX connexion: {:?}", message),
                 }
-                else if message == "stop" {
-                    log::debug!("Received a stop signal");
-                    stream.shutdown(Both).expect("Failed to stop the stream :S");
-                    std::process::exit(0);
-                }
-                else {
-                    log::warn!("Unhandled UNIX connexion: {:?}", message);
-                }
-                // thread::spawn(|| handle_client(stream));
             }
             Err(err) => {
                 log::error!("UNIX socket error: {}", err);

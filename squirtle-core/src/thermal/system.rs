@@ -1,6 +1,12 @@
 use super::{PlatformProfile, Hwmon, HwmonEntry, Cooling, Temperature};
 use std::{collections::HashMap, io::{Error, ErrorKind}};
 
+const ERROR_MSG: [&str; 3] = [
+    "Plaform-Profile is currently not available on this device.",
+    "The current profile has been requested on a platform that hasn't been found on this system.",
+    "Tried to set a platform-profile to a platform that hasn't been found on this device.",
+];
+
 /// The Thermal System is an global interface accessible as `Arc<RwLock<ThermalSystem>>` via the [`squirtle_core::SYSTEM`] LazyLock to store
 /// information about and manipulate:
 ///
@@ -33,27 +39,40 @@ pub struct ThermalSystem {
     ///
     /// The function needs to know which platform provider you want to query.
     /// For instance, on a Dell G-Series laptop, you'll probably want to deal with `alienware-wmi` instead of `dell-pc`.
-    pub fn get_platform_profile(&self, platform: &str) -> String {
-        let selected_platform: &PlatformProfile = match self.platform_profile.iter().find(|p| p.source.as_str() == platform) {
-            Some(platform) => platform,
-            None => panic!("Tried to gather info. about the platform-profile from a provider that hasn't been found on this device."),
-        };
-        selected_platform.profile.clone()
+    pub fn get_platform_profile(&self, platform: &str) -> Result<String, Error> {
+        if let Some(profiles) = &self.platform_profile {
+            let selected_platform: &PlatformProfile = match profiles.iter().find(|p| p.source.as_str() == platform) {
+                Some(profile) => profile,
+                None => {
+                    log::error!("{}", ERROR_MSG[1]);
+                    return Err(Error::new(ErrorKind::NotFound, ERROR_MSG[1]))
+                }
+            };
+            Ok(selected_platform.profile.clone())
+        }
+        else { Err(Error::new(ErrorKind::Unsupported, ERROR_MSG[0])) }
     }
 
     /// Set the wanted profile to the wanted platform_profile provider.
     ///
     /// The wanted profile will be tested against the user PC's availables choices before setting anything.
     /// Will log an error if the wanted profile doesn't exists in the first place, same thing for the wanted platform.
-    pub fn set_platform_profile(&mut self, platform: &str, wanted: String) {
-        let selected_platform: &mut PlatformProfile = match self.platform_profile.iter_mut().find(|p| p.source.as_str() == platform) {
-            Some(platform) => platform,
-            None => {
-                log::error!("Tried to set a platform-profile to a platform that hasn't been found on this device.");
-                return;
-            }
-        };
-        selected_platform.set_profile(wanted);
+    pub fn set_platform_profile(&mut self, platform: &str, wanted: String) -> Result<(), Error> {
+        match self.platform_profile.as_mut() {
+            Some(platforms) => {
+                match platforms.iter_mut().find(|p| p.source.as_str() == platform) {
+                    Some(platform) => {
+                        platform.set_profile(wanted);
+                        Ok(())
+                    }
+                    None => {
+                        log::error!("{}", ERROR_MSG[2]);
+                        Err(Error::new(ErrorKind::NotFound, ERROR_MSG[2]))
+                    }
+                }
+            },
+            None => Err(Error::new(ErrorKind::Unsupported, ERROR_MSG[0]))
+        }
     }
 
     /// Refresh the latest known temperatures inside the struct

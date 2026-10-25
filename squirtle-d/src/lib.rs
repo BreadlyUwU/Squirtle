@@ -65,7 +65,7 @@ fn vibe_check(socket: &mut UnixStream) {
     socket.shutdown(std::net::Shutdown::Read).expect("Cannot shutdown the read stream");
 
     if response == "Ok" {
-        eprintln!("SquirtleD is already running!");
+        println!("SquirtleD is already running!");
         std::process::exit(1);
     } else {
         eprintln!("SquirtleD answered to the vibe-check but with an unexpected response: {}", response);

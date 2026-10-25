@@ -6,13 +6,12 @@ fn main() -> std::io::Result<()> {
         eprintln!("This program is designed to be run on Linux.\nOther UNIX-based OS aren't guaranteed to be supported in the future.\nSorry for that.\n");
         std::process::exit(1)
     }
-    squirtle_core::utils::enable_debug_logging_if_needed();
+    utils::enable_debug_logging_if_needed();
 
     let args: Vec<String> = std::env::args().collect();
     match args.len() {
         2 => {
             match args[1].as_str() {
-                "-v" | "--version" => version(),
                 _ => help(),
             }
         },
@@ -27,7 +26,7 @@ fn main() -> std::io::Result<()> {
                 },
                 "fan-control" => {
                     match args[2].as_str() {
-                        "start" => squirtle_pidgey::init(squirtle_pidgey::RunningMode::Client),
+                        "start" => todo!(),
                         _ => help()
                     }
                 }
@@ -40,7 +39,7 @@ fn main() -> std::io::Result<()> {
                     match args[2].as_str() {
                         "start" => {
                             match args[3].as_str() {
-                                "--standalone" => squirtle_pidgey::init(squirtle_pidgey::RunningMode::Standalone),
+                                "--standalone" => todo!(),
                                 _ => help()
                             }
                         },
@@ -64,20 +63,6 @@ daemon
 fan-control
   start [OPTS]     : Start Pidgey
     (--standalone) : Start Pidgey without using SquirtleD
-                     (only recommended if you're not using any other client)
-
--v --version       : Show version"
+                     (only recommended if you're not using any other client)"
     );
-}
-
-fn version() {
-    println!("🐢 Squirtle Project 💦
-Squirtle-Core: Version {}
-SquirtleD: Version {}
-SquirtleCtl: Version {}
-Pidgey: Version {}",
-             squirtle_core::version(),
-             squirtle_d::version(),
-             String::from(env!("CARGO_PKG_VERSION")),
-             squirtle_pidgey::version());
 }

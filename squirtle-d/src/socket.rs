@@ -10,6 +10,7 @@ fn read_message(stream: &mut UnixStream) -> std::io::Result<String> {
 
 pub fn start(sock: &str) -> std::io::Result<()> {
     let listener = UnixListener::bind(sock)?;
+    println!("SquirtleD started");
 
     for stream in listener.incoming() {
         match stream {

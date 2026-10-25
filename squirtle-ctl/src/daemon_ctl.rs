@@ -5,6 +5,7 @@ use std::process::Stdio;
 // The String the program will have to search for when spawning SquirtleD
 const START_MESSAGE: &str = "SquirtleD started";
 const ALREADY_RUNNING_MESSAGE: &str = "SquirtleD is already running!";
+const TIMEOUT: std::time::Duration = std::time::Duration::from_secs(5);
 
 pub fn start() {
     let bin = find_bin();
@@ -16,18 +17,18 @@ pub fn start() {
 
             loop {
                 for line in buffer.by_ref().lines() {
+                    if timer.elapsed() > TIMEOUT {
+                        eprintln!("Error: Timeout");
+                        process.kill().unwrap();
+                        std::process::exit(1)
+                    }
                     let line = line.unwrap();
                     match line.as_str() {
                         START_MESSAGE           => return,
-                        ALREADY_RUNNING_MESSAGE => { println!("{ALREADY_RUNNING_MESSAGE}"); return},
+                        ALREADY_RUNNING_MESSAGE => { println!("{ALREADY_RUNNING_MESSAGE}"); return },
                         _                       => continue
                     }
-                }
 
-                if timer.elapsed() > std::time::Duration::from_secs(5) {
-                    eprintln!("Error: Timeout");
-                    process.kill().unwrap();
-                    std::process::exit(1)
                 }
 
                 std::thread::sleep(std::time::Duration::from_millis(500));

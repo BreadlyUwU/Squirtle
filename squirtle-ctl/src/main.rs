@@ -1,6 +1,5 @@
-use squirtle_core;
-use squirtle_d;
-use squirtle_pidgey;
+mod daemon_ctl;
+use squirtle_core::utils;
 
 fn main() -> std::io::Result<()> {
     if std::env::consts::OS != "linux" {
@@ -21,7 +20,8 @@ fn main() -> std::io::Result<()> {
             match args[1].as_str() {
                 "daemon" => {
                     match args[2].as_str() {
-                        "start" => squirtle_d::start(),
+                        "start" => daemon_ctl::start(),
+                        "stop" => daemon_ctl::stop(),
                         _ => help(),
                     }
                 },

@@ -12,7 +12,7 @@ use std::{collections::HashMap, io::{Error, ErrorKind}};
 /// Once ThermalSystem is ready, both `temperatures` and `cooling` will need to be manually initialized.
 /// by the client, depending on user's configuration and what has been found inside `hwmon_interfaces`.
 pub struct ThermalSystem {
-    pub platform_profile: Vec<PlatformProfile>,
+    pub platform_profile: Option<Vec<PlatformProfile>>,
     pub hwmon_interfaces: HashMap<String, Hwmon>,
     /// Must be defined by the client, Squirtle-core cannot know in advance where it should look at.
     pub temperatures: Option<Vec<Temperature>>,
@@ -88,7 +88,7 @@ pub struct ThermalSystem {
         } else { log::error!("Tried to refresh the current fan(s) input depsite it/them not being properly initialized."); }
     }
 
-    fn get_available_platform_profiles() -> Vec<PlatformProfile> {
+    fn get_available_platform_profiles() -> Option<Vec<PlatformProfile>> {
         match std::fs::read_dir("/sys/class/platform-profile") {
             Ok(platforms) => {
                 let mut platforms_vec: Vec<PlatformProfile> = Vec::new();
@@ -99,9 +99,12 @@ pub struct ThermalSystem {
                         .split_whitespace().map(ToString::to_string).collect();
                     platforms_vec.push(PlatformProfile { location: platform.path(), source: name, profile, choices });
                 }
-                platforms_vec
+                Some(platforms_vec)
             },
-            Err(e) => panic!("{:?}", e),
+            Err(e) => {
+                log::warn!("Platform-Profile doesn't seem to be available on this platform. ({})", e);
+                None
+            },
         }
     }
 

@@ -25,20 +25,21 @@ pub fn start(arc: Arc<RwLock<ThermalSystem>>) {
         log::info!("Let's a go!");
 
         // First storing the current platform_profile before trying anything
-        let previous_platform_profile: String = {
-            let platform_profile_guard = system.read().unwrap();
-            platform_profile_guard.get_platform_profile("alienware-wmi")
-        };
-        log::debug!("previous_platform_profile set to {}", &previous_platform_profile);
+        // let previous_platform_profile: Option<String> = {
+        //     let platform_profile_guard = system.read().unwrap();
+        //     platform_profile_guard.get_platform_profile("alienware-wmi").ok()
+        // };
 
-        let platform_profile_restoration_needed: bool = if let Some(config_profile) = &CONFIGURATION.platform_profile {
-            if &previous_platform_profile != config_profile {
-                system.write().unwrap().set_platform_profile("alienware-wmi", config_profile.to_owned());
-                log::info!("Platform Profile set to {}, previous state ({}) will be restored when exiting", &config_profile, &previous_platform_profile);
-                true
-            }
-            else { false }
-        } else { false };
+        // log::debug!("previous_platform_profile set to {}", &previous_platform_profile);
+
+        // let platform_profile_restoration_needed: bool = if let Some(config_profile) = &CONFIGURATION.platform_profile {
+        //     if &previous_platform_profile != config_profile {
+        //         system.write().unwrap().set_platform_profile("alienware-wmi", config_profile.to_owned());
+        //         log::info!("Platform Profile set to {}, previous state ({}) will be restored when exiting", &config_profile, &previous_platform_profile);
+        //         true
+        //     }
+        //     else { false }
+        // } else { false };
 
         // Initializing the temperature sensors from the config against the discovered Hwmon interfaces
         if let Err(e) = initialize_temp_sensors(system.clone()) {
@@ -85,10 +86,10 @@ pub fn start(arc: Arc<RwLock<ThermalSystem>>) {
         /********************************************************************/
 
         // Restoring previous platform_profile if needed
-        if platform_profile_restoration_needed == true {
-            system.write().unwrap().set_platform_profile("alienware-wmi", previous_platform_profile);
-            log::info!("Platform Profile restored.")
-        }
+        // if platform_profile_restoration_needed == true {
+        //     system.write().unwrap().set_platform_profile("alienware-wmi", previous_platform_profile);
+        //     log::info!("Platform Profile restored.")
+        // }
 
         log::info!("Bye bye!");
     });

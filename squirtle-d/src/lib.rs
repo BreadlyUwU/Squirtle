@@ -1,51 +1,49 @@
 mod socket;
 use std::{io::{ErrorKind, Read, Write}, os::unix::net::UnixStream, time::Duration};
 
-const SOCKET_PATH: &str = "/run/squirtle.sock";
-
-pub fn start() {
+pub fn start(socket: &str) -> std::io::Result<()> {
     // Program will close early if not executed with root permissions
     squirtle_core::utils::root_check();
     // Now, we must know if a socket has already been created.
     // Because if yes, it can be either a socket from a previous session, or a currently used one.
-    old_sock_checker();
+    old_sock_checker(&socket);
+    socket::start(&socket)?;
+    Ok(())
 }
 
 /// Sniffa the sock & throw it to the trash bin if it stinks
-fn old_sock_checker() {
-    match std::fs::exists(SOCKET_PATH) {
+fn old_sock_checker(socket: &str) {
+    match std::fs::exists(socket) {
         Ok(true) => {
-            match UnixStream::connect(SOCKET_PATH) {
+            match UnixStream::connect(socket) {
                 Ok(mut sock) => vibe_check(&mut sock),
                 Err(e) => {
                     match e.kind() {
                         ErrorKind::ConnectionRefused => {
-                            log::info!("Socket found, but couldn't connect to it {}: {}", SOCKET_PATH, e);
-                            let _ = match std::fs::remove_file(SOCKET_PATH) {
+                            log::info!("Socket found, but couldn't connect to it {}: {}", socket, e);
+                            let _ = match std::fs::remove_file(socket) {
                                 Ok(_) => {
-                                    log::info!("Old socket cleared, can now start");
-                                    socket::start(SOCKET_PATH)
+                                    log::info!("Old socket cleared.");
                                 },
                                 Err(e) => {
-                                    log::error!("Couldn't delete the old socket file {}: {}", SOCKET_PATH, e);
+                                    log::error!("Couldn't delete the old socket file {}: {}", socket, e);
                                     std::process::exit(1)
                                 },
                             };
                         },
                         ErrorKind::PermissionDenied => {
-                            eprintln!("SquirtleCtl doesn't have permission to read {}, please retry with root permission.", SOCKET_PATH);
+                            eprintln!("SquirtleCtl doesn't have permission to read {}, please retry with root permission.", socket);
                             std::process::exit(1)
                         },
                         _ => {
-                            eprintln!("Unexpected error while reading {}: {}", SOCKET_PATH, e);
+                            eprintln!("Unexpected error while reading {}: {}", socket, e);
                             std::process::exit(2)
                         },
                     }
-
                 },
             };
         },
-        Ok(false) => socket::start(SOCKET_PATH).unwrap(),
+        Ok(false) => socket::start(socket).unwrap(),
         Err(e) => {
             eprintln!("Cannot check the presence of a currently used or abandoned socket at the expected path: {}", e);
             std::process::exit(1)
@@ -72,5 +70,3 @@ fn vibe_check(socket: &mut UnixStream) {
         std::process::exit(2);
     }
 }
-
-pub fn version() -> String { String::from(env!("CARGO_PKG_VERSION")) }

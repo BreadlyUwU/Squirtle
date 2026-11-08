@@ -1,5 +1,6 @@
+use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
-use std::io::{BufRead, BufReader, Read};
+use std::io::{BufRead, BufReader, ErrorKind, Read, Write};
 use std::process::Stdio;
 
 // The String the program will have to search for when spawning SquirtleD
@@ -42,7 +43,9 @@ pub fn start() {
 }
 
 pub fn stop() {
-
+    if let Err(e) = message("stop") {
+        eprintln!("{e}");
+    }
 }
 
 fn find_bin() -> PathBuf {
@@ -62,5 +65,24 @@ fn find_bin() -> PathBuf {
             eprintln!("\"squirtled\" hasn't been found in the PATH");
             std::process::exit(1);
         }
+    }
+}
+
+fn message(msg: &str) -> std::io::Result<()> {
+    let socket: &str = "/run/squirtled.sock";
+    match UnixStream::connect(socket) {
+        Ok(mut sock) => {
+            sock.write_all(msg.as_bytes())?;
+            sock.shutdown(std::net::Shutdown::Both)?;
+            Ok(())
+        },
+        Err(e) => {
+            match e.kind() {
+                ErrorKind::NotFound => eprintln!("No socket found at {}. SquirtleD has probably not been started, or has been but with the socket set to an another location than the default one.", socket),
+                ErrorKind::ConnectionRefused => eprintln!("Socket found, but couldn't connect to it {}: {}", socket, e),
+                ErrorKind::PermissionDenied => eprintln!("You do not have permission to interract with SquirtleD."),
+                _ => eprintln!("Unexpected error while reading {}: {}", socket, e),
+            } Err(e)
+        },
     }
 }

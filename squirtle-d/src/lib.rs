@@ -11,6 +11,9 @@ pub fn start(socket: &str) -> std::io::Result<()> {
     Ok(())
 }
 
+// ⚠️ ABSOLUTE TODO: I haven't checked it yet but the way this function works, it could delete any file pointed
+//                   from `socket` argument regardless of if the location pointed is a valid UNIX socket file or
+//                   anything else. And that's not a desired behavior.
 /// Sniffa the sock & throw it to the trash bin if it stinks
 fn old_sock_checker(socket: &str) {
     match std::fs::exists(socket) {
